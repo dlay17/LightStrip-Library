@@ -11,11 +11,14 @@
 class LightStrip
 {
 	public:
-		LightStrip(int PIR_sensor[], int num_of_sensors);					//constructor
+		LightStrip(int sensor_array[], int num_of_sensors_in, int LED_pin);					//constructor
 		void cycle_PIR();													//cycles through all of the PIR sensors to check if there if one triggers
+		void LED_all_on();													//turns all LED on
+		void LED_all_off();													//turns all LED off
+		int analog_read_out(int sensor);									//analog out for debugging
 	private:
-		int PIR_sensor[];													//array of PIR sensors
-		int num_of_sensors;
+		int PIR_sensor[4];													//array of PIR sensors
+		int num_of_sensors_g;
 		Adafruit_NeoPixel strip;											//sets up the LED strip
 		
 		

@@ -1,6 +1,6 @@
 /**
  *LightStrip.h - The Passive Infrared (PIR) Project from the Automation Lab at Brandeis University
- *Authored by Daniel Lay, the BIGGEST brain programmer at the automation lab (suck it Tim)
+ *Authored by Daniel Lay, the BIGGEST brain programmer at the automation lab
  */
 
 #include <Arduino.h>
@@ -8,19 +8,29 @@
 #include "Adafruit_NeoPixel.h"
 
 //Constructor for the LightStrip
-LightStrip::LightStrip(int PIR_sensor[], int num_of_sensors){
-	strip = Adafruit_NeoPixel(num_of_sensors, LED_pin, NEO_GRB + NEO_KHZ800);
+LightStrip::LightStrip(int sensor_array[], int num_of_sensors_in, int LED_pin){
+	num_of_sensors_g = num_of_sensors_in;
+	strip = Adafruit_NeoPixel(num_of_sensors_g, LED_pin, NEO_GRB + NEO_KHZ800);
+	PIR_sensor[0] = 99;
+	PIR_sensor[1] = 99;
+	PIR_sensor[2] = 99;
+	PIR_sensor[3] = 99;
 	
-	PIR_sensor = PIR_sensor[];	
-	num_of_sensors = num_of_sensors;
+	for(int i = 0;i<num_of_sensors_g;i++){
+		PIR_sensor[i]=sensor_array[i];
+		Serial.println(PIR_sensor[i]);
+		pinMode(PIR_sensor[i],INPUT);
+	}
+	
+	strip.begin();
+	strip.show(); // Initialize all pixels to 'off'
 }
 
-bool LightStrip::check_move(int PIR_output){
-	if(PIR_output>600){           
+bool LightStrip::check_move(int PIR_Read){
+	if(PIR_Read>600){           
 		return true;
-	}else{
-		return false;
 	}
+	return false;
 }
 
 void LightStrip::LED_on(int LED, char color){
@@ -58,13 +68,34 @@ void LightStrip::LED_off(int LED){
 
 //cycles through each PIR sensor to check that it is moving
 void LightStrip::cycle_PIR(void){
-	for(int i = 0;i<num_of_PIR;i++){
+	for(int i = 0;i<num_of_sensors_g;i++){
 		//checks for the PIR sensor is active: if so, on, else off
-		if(check_move(PIR_sensor[i])){
-			LED_on(i, 'r');
+		if(check_move(analogRead(PIR_sensor[i]))){
+			LED_on(PIR_sensor[i], 'r');
 		}else{
-			LED_off(i);
+			LED_off(PIR_sensor[i]);
 		}
-	}	
+	}
+	strip.show();
 }
 
+int LightStrip::analog_read_out(int sensor){
+	return analogRead(PIR_sensor[sensor]);
+}
+
+void LightStrip::LED_all_on(void){
+	for(int i = 0;i<num_of_sensors_g;i++){
+		LED_on(PIR_sensor[i], 'r');
+	}
+	strip.show();
+}
+
+void LightStrip::LED_all_off(void){
+	for(int i = 0;i<num_of_sensors_g;i++){
+		LED_off(PIR_sensor[i]);
+	}
+	strip.show();
+}
+	
+	
+	
