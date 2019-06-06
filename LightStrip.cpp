@@ -10,15 +10,10 @@
 //Constructor for the LightStrip
 LightStrip::LightStrip(int sensor_array[], int num_of_sensors_in, int LED_pin){
 	num_of_sensors_g = num_of_sensors_in;
-	strip = Adafruit_NeoPixel(num_of_sensors_g, LED_pin, NEO_GRB + NEO_KHZ800);
-	PIR_sensor[0] = 99;
-	PIR_sensor[1] = 99;
-	PIR_sensor[2] = 99;
-	PIR_sensor[3] = 99;
+	strip = Adafruit_NeoPixel(num_of_sensors_in, LED_pin, NEO_GRB + NEO_KHZ800);
 	
 	for(int i = 0;i<num_of_sensors_g;i++){
 		PIR_sensor[i]=sensor_array[i];
-		Serial.println(PIR_sensor[i]);
 		pinMode(PIR_sensor[i],INPUT);
 	}
 	
